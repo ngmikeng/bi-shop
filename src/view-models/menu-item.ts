@@ -4,4 +4,5 @@ export interface IMenuItem {
   title: string,
   imageUrl: string,
   size?: string,
+  linkUrl: string,
 }
