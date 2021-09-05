@@ -1,0 +1,27 @@
+
+.header {
+  height: 80px;
+  background-color: lightblue;
+  display: flex;
+  justify-content: space-between;
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+  }
+
+  .options {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .option {
+      padding: 5px 15px;
+      text-decoration: none;
+      color: #232323;
+    }
+  }
+}
