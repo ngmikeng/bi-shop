@@ -1,22 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORE_BUCKET",
-  messagingSenderId: "YOU_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
-};
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import { getAuth, signInWithPopup, createUserWithEmailAndPassword, GoogleAuthProvider, User } from "firebase/auth";
+import firebaseConfig from "./firebase.config";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -40,3 +27,35 @@ export const signInWithGoogle = () => {
     console.log(errorMessage);
   });
 };
+
+
+export const createUserProfileDocument = async (userAuth: User, additionalData: any = {}) => {
+  if (!userAuth) {
+    return;
+  }
+
+  const userRef = doc(firestore, `users/${userAuth.uid}`);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+
+    try {
+      await setDoc(userRef, {
+        displayName,
+        email,
+        createdAt,
+        ...additionalData,
+      })
+    } catch (error) {
+      console.log('error creating user', error);
+    }
+  }
+
+  return userRef;
+}
+
+export const createUserWithEmailPassword = async (email: string, password: string) => {
+  return createUserWithEmailAndPassword(auth, email, password);
+}
